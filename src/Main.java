@@ -22,22 +22,13 @@ import org.lwjgl.input.Mouse;
 import utils.GraphicsUtils;
 import utils.InputUtils;
 import utils.LogUtils;
+import utils.ServerUtils;
 
 import java.io.*;
-import java.net.Socket;
-import java.net.UnknownHostException;
 
 public class Main extends SimpleApplication {
 
     private static Main app;
-
-    private static Socket gameSocket;
-    private static DataOutputStream output;
-    private static DataInputStream input;
-    private static int retryCounter;
-
-    private static final int MAX_RETRIES = 10;
-    private static final int RETRY_DELAY = 2000;
 
     private static ChaseCamera chaseCam;
 
@@ -53,85 +44,12 @@ public class Main extends SimpleApplication {
     private static final float HAND_VIEW_ANGLE = 0.30f;
     private static final float BOARD_VIEW_ANGLE = 0.90f;
 
-    private static void exit() {
-        try {
-            output.writeBytes("Client disconnected.\n");
-            output.writeBytes("quit\n");
-            gameSocket.close();
-            input.close();
-            output.close();
-        } catch (IOException | NullPointerException e) {
-            System.err.print("Failed to properly close connection.");
-        }
-        if (app != null) {
-            app.stop();
-        }
-        System.exit(0);
-    }
-
-    private static void connectToHost(String hostname, int port) {
-        gameSocket = null;
-        input = null;
-        output = null;
-        try {
-            gameSocket = new Socket(hostname, port);
-            input = new DataInputStream(gameSocket.getInputStream());
-            output = new DataOutputStream(gameSocket.getOutputStream());
-        } catch (UnknownHostException e) {
-            System.err.println("Can't find host: " + hostname);
-            if (retryCounter++ <= MAX_RETRIES) {
-                try {
-                    Thread.sleep(RETRY_DELAY);
-                } catch (InterruptedException e1) {
-                    e1.printStackTrace();
-                }
-                System.out.println("Retrying...");
-                connectToHost(hostname, port);
-            } else {
-                System.err.println("Maximum connection retries exceeded. Exiting...");
-                exit();
-            }
-        } catch (IOException e) {
-            System.err.println("Couldn't get I/O for connection to: " + hostname);
-            if (retryCounter++ <= MAX_RETRIES) {
-                try {
-                    Thread.sleep(RETRY_DELAY);
-                } catch (InterruptedException e1) {
-                    e1.printStackTrace();
-                }
-                System.out.println("Retrying...");
-                connectToHost(hostname, port);
-            } else {
-                System.err.println("Maximum connection retries exceeded. Exiting...");
-                exit();
-            }
-        }
-    }
-
     public static void main(String [] args) throws IllegalMoveException {
-        connectToHost("10.0.0.50", 7000);
-
-        if (gameSocket != null && output != null && input != null) {
-            try {
-                output.writeBytes("Connection to client successful!\n");
-                System.out.println("Woo!");
-//                String responseLine;
-//                BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-//                while ((responseLine = reader.readLine()) != null) {
-//                    if (responseLine.contains("quit")) {
-//                        break;
-//                    }
-//                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        LogUtils.setOutputStream(output);
+        ServerUtils.connectToHost("10.250.3.11", 7000);
 
         app = new Main();
+        ServerUtils.setApp(app);
         app.start();
-
     }
 
     private void selectCard(Node card) {
@@ -188,7 +106,7 @@ public class Main extends SimpleApplication {
     private ActionListener actionListener = new ActionListener() {
         public void onAction(String name, boolean keyPressed, float tpf) {
             if (name.equals("exit") && !keyPressed) {
-                exit();
+                ServerUtils.exitGame();
             }
 
             if (name.equals("select") && !keyPressed) {
