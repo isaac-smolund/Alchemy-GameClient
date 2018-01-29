@@ -1,10 +1,12 @@
 package utils;
 
 import com.jme3.app.SimpleApplication;
+import models.ServerListenerThread;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -18,7 +20,7 @@ public class ServerUtils {
 
     private static Socket gameSocket;
     private static DataOutputStream output;
-    private static DataInputStream input;
+    private static InputStreamReader input;
     private static int retryCounter;
 
     private static SimpleApplication app;
@@ -45,7 +47,7 @@ public class ServerUtils {
         output = null;
         try {
             gameSocket = new Socket(hostname, port);
-            input = new DataInputStream(gameSocket.getInputStream());
+            input = new InputStreamReader(gameSocket.getInputStream());
             output = new DataOutputStream(gameSocket.getOutputStream());
         } catch (UnknownHostException e) {
             System.err.println("Can't find host: " + hostname);
@@ -81,19 +83,18 @@ public class ServerUtils {
             try {
                 output.writeBytes("Connection to client successful!\n");
                 System.out.println("Woo!");
-//                String responseLine;
-//                BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-//                while ((responseLine = reader.readLine()) != null) {
-//                    if (responseLine.contains("quit")) {
-//                        break;
-//                    }
-//                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
 
         LogUtils.setOutputStream(output);
+        init();
+    }
+
+    private static void init() {
+        ServerListenerThread serverThread = new ServerListenerThread("thread_1", input);
+        serverThread.start();
     }
 
     public static void exitGame() {

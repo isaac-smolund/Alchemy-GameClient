@@ -24,8 +24,6 @@ import utils.InputUtils;
 import utils.LogUtils;
 import utils.ServerUtils;
 
-import java.io.*;
-
 public class Main extends SimpleApplication {
 
     private static Main app;
@@ -45,11 +43,25 @@ public class Main extends SimpleApplication {
     private static final float BOARD_VIEW_ANGLE = 0.90f;
 
     public static void main(String [] args) throws IllegalMoveException {
-        ServerUtils.connectToHost("10.250.3.11", 7000);
+        ServerUtils.connectToHost("localhost", 7000);
 
         app = new Main();
         ServerUtils.setApp(app);
-        app.start();
+        MainThread mainThread = new MainThread("main_thread", app);
+        mainThread.start();
+    }
+
+    private static class MainThread extends Thread {
+        private String name;
+        private SimpleApplication app;
+        MainThread(String name, SimpleApplication app) {
+            this.name = name;
+            this.app = app;
+            System.out.println("Creating thread \"" + name + "\"");
+        }
+        public void run() {
+            app.start();
+        }
     }
 
     private void selectCard(Node card) {
