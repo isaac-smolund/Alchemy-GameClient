@@ -3,7 +3,6 @@ package utils;
 import com.jme3.app.SimpleApplication;
 import models.ServerListenerThread;
 
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -33,19 +32,27 @@ public class ServerUtils {
         try {
             output.writeBytes("Client disconnected.\n");
             output.writeBytes("quit\n");
-            gameSocket.close();
-            input.close();
-            output.close();
+            closeAll();
         } catch (IOException | NullPointerException e) {
             System.err.print("Failed to properly close connection.");
         }
     }
 
+    private static void closeAll() throws IOException {
+        if (gameSocket != null) {
+            gameSocket.close();
+        }
+        if (input != null) {
+            input.close();
+        }
+        if (output != null) {
+            output.close();
+        }
+    }
+
     public static void connectToHost(String hostname, int port) {
-        gameSocket = null;
-        input = null;
-        output = null;
         try {
+            closeAll();
             gameSocket = new Socket(hostname, port);
             input = new InputStreamReader(gameSocket.getInputStream());
             output = new DataOutputStream(gameSocket.getOutputStream());
@@ -83,17 +90,17 @@ public class ServerUtils {
             try {
                 output.writeBytes("Connection to client successful!\n");
                 System.out.println("Woo!");
+                LogUtils.setOutputStream(output);
+                init();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
 
-        LogUtils.setOutputStream(output);
-        init();
     }
 
-    private static void init() {
-        ServerListenerThread serverThread = new ServerListenerThread("thread_1", input);
+    private static void init() throws IOException {
+        ServerListenerThread serverThread = new ServerListenerThread("thread_1", gameSocket.getInputStream());
         serverThread.start();
     }
 

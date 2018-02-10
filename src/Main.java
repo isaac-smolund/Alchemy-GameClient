@@ -43,12 +43,12 @@ public class Main extends SimpleApplication {
     private static final float BOARD_VIEW_ANGLE = 0.90f;
 
     public static void main(String [] args) throws IllegalMoveException {
-        ServerUtils.connectToHost("localhost", 7000);
 
         app = new Main();
         ServerUtils.setApp(app);
         MainThread mainThread = new MainThread("main_thread", app);
         mainThread.start();
+        ServerUtils.connectToHost("localhost", 7000);
     }
 
     private static class MainThread extends Thread {

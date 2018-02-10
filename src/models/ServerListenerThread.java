@@ -1,9 +1,6 @@
 package models;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.Socket;
+import java.io.*;
 
 /**
  * Created by Isaac on 1/27/18.
@@ -11,29 +8,28 @@ import java.net.Socket;
 public class ServerListenerThread extends Thread {
 
     private String name;
-    private InputStreamReader input;
+    private BufferedReader inputStream;
 
-    public ServerListenerThread(String name, InputStreamReader input) {
+    public ServerListenerThread(String name, InputStream input) {
         this.name = name;
-        this.input = input;
+        this.inputStream = new BufferedReader(new InputStreamReader(input));
         System.out.println("Creating Thread \"" + name + "\"");
     }
 
+
     public void run() {
+        String fromServer;
         try {
-            BufferedReader inputReader = new BufferedReader(input);
-            String fromServer = inputReader.readLine();
+            fromServer = inputStream.readLine();
             while (true) {
-//                if (fromServer != null) {
+                if (!fromServer.isEmpty()) {
                     System.out.println("[" + name + "]: MESSAGE FROM SERVER: " + fromServer);
-//                }
-                fromServer = inputReader.readLine();
+                }
+                fromServer = inputStream.readLine();
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
     }
 
 }
