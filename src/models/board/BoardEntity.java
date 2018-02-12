@@ -3,7 +3,11 @@ package models.board;
 import models.Player;
 import models.energyUtils.Stockpile;
 import utils.EventService;
+import utils.GraphicsUtils;
 import utils.LogUtils;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Isaac on 6/11/17.
@@ -56,6 +60,7 @@ public abstract class BoardEntity {
         if (currentHealth <= 0) {
             die();
         }
+        GraphicsUtils.renderBoard();
     }
 
     protected abstract void die();
@@ -82,5 +87,13 @@ public abstract class BoardEntity {
     // Notify the entity of any events that are being listened for:
     public void notify(EventService.Event event) {
 
+    }
+
+    Map<String, Object> encode() {
+        Map<String, Object> entityMap = new HashMap<>();
+        entityMap.put("health", currentHealth);
+        entityMap.put("maxHealth", maxHealth);
+
+        return entityMap;
     }
 }

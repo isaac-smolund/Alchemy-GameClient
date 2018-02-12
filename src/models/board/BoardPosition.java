@@ -3,6 +3,9 @@ package models.board;
 import com.jme3.scene.Node;
 import models.Player;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by Isaac on 6/16/17.
  */
@@ -48,5 +51,16 @@ public class BoardPosition {
 
     public String toString() {
         return isEmpty() ? "Empty space." : entity.toString();
+    }
+
+    public Map<String, Object> encode() {
+        Map<String, Object> positionMap = new HashMap<>();
+        positionMap.put("entityType", BoardPosition.class);
+        positionMap.put("position", position);
+        if (entity != null) {
+            positionMap.put("entity", entity.encode());
+        }
+
+        return positionMap;
     }
 }

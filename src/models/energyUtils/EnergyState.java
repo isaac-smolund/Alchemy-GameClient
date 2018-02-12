@@ -4,15 +4,28 @@ import com.jme3.math.ColorRGBA;
 import utils.GraphicsUtils;
 import utils.LogUtils;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by Isaac on 5/30/17.
  */
 public class EnergyState {
 
-    protected int red;
-    protected int blue;
-    protected int green;
-    protected int yellow;
+    int red;
+    int blue;
+    int green;
+    int yellow;
+
+    public Map<String, Object> encode() {
+        Map<String, Object> energyMap = new HashMap<>();
+        energyMap.put("entityType", EnergyState.class);
+        energyMap.put("red", red);
+        energyMap.put("blue", blue);
+        energyMap.put("green", green);
+        energyMap.put("yellow", yellow);
+        return energyMap;
+    }
 
     public enum ENERGY_TYPE {
         RED("red", "R", LogUtils.colorRed("RED"), ColorRGBA.Red),

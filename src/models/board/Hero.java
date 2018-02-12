@@ -14,6 +14,7 @@ import utils.LogUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Isaac on 6/3/17.
@@ -178,5 +179,21 @@ public class Hero extends BoardEntity {
             }
         }
         super.dealDamage(damageToDeal);
+    }
+
+    @Override
+    public Map<String, Object> encode() {
+        Map<String, Object> entityMap = super.encode();
+        entityMap.put("entityType", Hero.class);
+        entityMap.put("energy", storedEnergy.encode());
+        entityMap.put("card", card.getName());
+
+        ArrayList<Map<String, Object>> equipmentList = new ArrayList<>();
+        for (Equipment equippedItem : equipment) {
+            equipmentList.add(equippedItem.encode());
+        }
+        entityMap.put("equipment", equipmentList);
+
+        return entityMap;
     }
 }

@@ -359,14 +359,14 @@ public class Main extends SimpleApplication {
         }
         yourDeck.shuffle();
 
-        Player you = new Player(0, yourDeck);
+        Player you = new Player(0, yourDeck, true);
 
 //        final int INITIAL_DRAW = 5;
 //        you.draw(INITIAL_DRAW);
 
         you.fillStockpile();
 
-        Player opponent = new Player(1, yourDeck);
+        Player opponent = new Player(1, yourDeck, false);
         opponent.fillStockpile();
 
         InputUtils.initInput();

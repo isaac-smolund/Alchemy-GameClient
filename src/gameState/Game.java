@@ -24,7 +24,7 @@ public class Game {
 
     private static int turn;
     private static Player winningPlayer = null;
-    private static final Player TIE_GAME = new Player(-1, null);
+    private static final Player TIE_GAME = new Player(-1, null, false);
 
     public static final int STARTING_HEALTH = 30;
 
@@ -109,6 +109,7 @@ public class Game {
     }
 
     public static void setStatus(STATUS status) {
+        GraphicsUtils.setHudText(status.toString());
         Game.status = status;
     }
 
@@ -137,9 +138,19 @@ public class Game {
         return players.get(0);
     }
 
+    public static Player getNextPlayer() {
+        for (Player player : players) {
+            System.out.println("Searching players for " + (turn + 1) + " ... " + player.getTurnOrder());
+            if (player.getTurnOrder() == turn + 1) {
+                return player;
+            }
+        }
+        return players.get(0);
+    }
+
     public static Player getPlayerByName(String name) {
         for (Player player : players) {
-            if (player.playerNameNoColor().equalsIgnoreCase(name)) {
+            if (player.playerName().equalsIgnoreCase(name)) {
                 return player;
             }
         }
@@ -155,7 +166,7 @@ public class Game {
 //        InputUtils.initInput();
 
         for (Player player : players) {
-//            System.out.print("Enter name for " + player.playerNameNoColor() + " (or ENTER to skip): ");
+//            System.out.print("Enter name for " + player.playerName() + " (or ENTER to skip): ");
 //            String name = InputUtils.getInput();
 //            if (!name.isEmpty()) {
 //                player.setName(name);
@@ -184,17 +195,26 @@ public class Game {
 
         LogUtils.log(LogUtils.LOG_TYPE.PUBLIC, "*** " + currentPlayer.playerName() + "'s turn ***");
 
+        turn = currentPlayer.getTurnOrder();
+        System.out.println("Current turn # is " + turn);
+
         setStatusEnergyPhase();
 
         currentPlayer.draw();
 
         currentPlayer.getStoredEnergy().refill();
 
+        System.out.println(BoardState.getInstance().encode().toString());
+
     }
 
     public static void endTurn(Player currentPlayer) {
-        Game.setStatus(STATUS.ABILITY_PHASE);
-        executeEndTurnAbilityForPosition(currentPlayer.getBoard()[0]);
+        if (currentPlayer.equals(Game.getPlayer())) {
+            Game.setStatus(STATUS.ABILITY_PHASE);
+            executeEndTurnAbilityForPosition(currentPlayer.getBoard()[0]);
+        } else {
+            Game.takeTurn(Game.getPlayer());
+        }
 //        for (BoardPosition pos : currentPlayer.getBoard()) {
 //            if (!pos.isEmpty()) {
 //                if (pos.getEntity() instanceof Hero) {
@@ -233,7 +253,8 @@ public class Game {
         if (newPos != null) {
             executeEndTurnAbilityForPosition(newPos);
         } else {
-            takeTurn(getCurrentPlayer());
+            takeTurn(getNextPlayer());
+            Game.setStatus(STATUS.ENEMY_TURN);
             GraphicsUtils.renderBoard();
             GraphicsUtils.renderCards(getPlayer());
         }

@@ -1,22 +1,13 @@
 package models.board;
 
-import com.jme3.asset.AssetLoadException;
-import com.jme3.asset.plugins.FileLocator;
-import com.jme3.scene.Geometry;
-import com.jme3.scene.Node;
-import com.jme3.texture.Texture;
 import gameState.Game;
 import models.Player;
 import models.cards.HeroCard;
 import models.exceptions.CardNotFoundException;
 import models.exceptions.IllegalMoveException;
 import models.exceptions.PositionOccupiedException;
-import utils.GraphicsUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Isaac on 6/3/17.
@@ -120,6 +111,20 @@ public class BoardState {
 
     public BoardPosition getNextPosition(BoardPosition pos) {
         return allPositions().get(pos.getPosition() + 1);
+    }
+
+    public Map<String, Object> encode() {
+        Map<String, Object> boardMap = new HashMap<>();
+        boardMap.put("entityType", BoardState.class);
+
+        ArrayList<Map<String, Object>> playerMap = new ArrayList<>();
+        for (Player player : Game.players) {
+            playerMap.add(player.encode());
+        }
+
+        boardMap.put("players", playerMap);
+
+        return boardMap;
     }
 
 }

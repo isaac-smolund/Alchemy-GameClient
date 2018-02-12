@@ -4,6 +4,9 @@ import models.Player;
 import models.cards.EquipmentCard;
 import utils.LogUtils;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by Isaac on 6/25/17.
  */
@@ -51,6 +54,15 @@ public class Equipment extends BoardEntity {
         LogUtils.log(LogUtils.LOG_TYPE.PUBLIC, longName() + " broke!");
         equippedTo.unequip(this);
         onRemove();
+    }
+
+    @Override
+    public Map<String, Object> encode() {
+        Map<String, Object> entityString = new HashMap<>();
+        entityString.put("entityType", Equipment.class);
+        entityString.put("card", getCard().getName());
+
+        return entityString;
     }
 
 

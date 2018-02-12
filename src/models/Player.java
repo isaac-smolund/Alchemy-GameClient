@@ -11,12 +11,17 @@ import utils.GraphicsUtils;
 import utils.InputUtils;
 import utils.LogUtils;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by Isaac on 5/30/17.
  */
 public class Player {
 
-    public int playOrder;
+    private int playOrder;
+    public boolean isLocalPlayer;
 
     private String name;
 
@@ -28,23 +33,24 @@ public class Player {
     private PlayerEntity entity;
     private BoardPosition[] boardSpaces;
 
-    public Player(int turnOrder, Deck deck) {
-        this(turnOrder, null, deck);
+    public Player(int turnOrder, Deck deck, boolean isLocalPlayer) {
+        this(turnOrder, null, deck, isLocalPlayer);
     }
 
-    public Player(int turnOrder, String name, Deck deck) {
+    public Player(int turnOrder, String name, Deck deck, boolean isLocalPlayer) {
         this.playOrder = turnOrder;
         this.hand = new Hand();
         this.name = name;
         this.deck = deck;
+        this.isLocalPlayer = isLocalPlayer;
 
         this.storedEnergy = new Stockpile(this, null);
         this.entity = new PlayerEntity(this);
         boardSpaces = initBoardPositions();
     }
 
-    public Player(int turnOrder, String name, Deck deck, Stockpile storedEnergy) {
-        this(turnOrder, name, deck);
+    public Player(int turnOrder, String name, Deck deck, boolean isLocalPlayer, Stockpile storedEnergy) {
+        this(turnOrder, name, deck, isLocalPlayer);
         this.storedEnergy = storedEnergy;
     }
 
@@ -63,12 +69,8 @@ public class Player {
         return toReturn;
     }
 
-    public String playerNameNoColor() {
-        return (name != null ? name : "Player " + (playOrder + 1));
-    }
-
     public String playerName() {
-        return LogUtils.colorRed(playerNameNoColor());
+        return (name != null ? name : "Player " + (playOrder + 1));
     }
 
     public void draw() {
@@ -141,9 +143,10 @@ public class Player {
     }
 
     public void playCard(Card playedCard) throws CardNotFoundException, PositionOccupiedException, IllegalMoveException {
-        if (playedCard.getCost().isSatisfiedByOffering(getStoredEnergy().getCurrentEnergy())) {
+        if (isLocalPlayer) {
+            if (playedCard.getCost().isSatisfiedByOffering(getStoredEnergy().getCurrentEnergy())) {
 
-            BoardEntity entity = null;
+                BoardEntity entity = null;
 
 //            try {
                 LogUtils.logCardPlayed(this, playedCard);
@@ -160,9 +163,11 @@ public class Player {
 //            } catch (ActionCancelledException e) {
 //                LogUtils.logActionCancelled();
 //            }
-        }
-        else {
-            LogUtils.log(LogUtils.LOG_TYPE.PRIVATE, "Not enough energy!");
+            } else {
+                LogUtils.log(LogUtils.LOG_TYPE.PRIVATE, "Not enough energy!");
+            }
+        } else {
+            LogUtils.logCardPlayed(this, playedCard);
         }
     }
 
@@ -197,5 +202,21 @@ public class Player {
 
     public PlayerEntity getEntity() {
         return entity;
+    }
+
+    public Map<String,Object> encode() {
+        Map<String, Object> playerMap = new HashMap<>();
+        playerMap.put("entityType", Player.class);
+        playerMap.put("health", getEntity().getCurrentHealth());
+        playerMap.put("maxHealth", getEntity().getMaxHealth());
+        playerMap.put("energy", storedEnergy.encode());
+
+        ArrayList<Map<String, Object>> boardMap = new ArrayList<>();
+        for (BoardPosition boardPosition : boardSpaces) {
+            boardMap.add(boardPosition.encode());
+        }
+        playerMap.put("board", boardMap);
+
+        return playerMap;
     }
 }

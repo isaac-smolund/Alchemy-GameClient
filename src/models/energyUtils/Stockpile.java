@@ -2,7 +2,10 @@ package models.energyUtils;
 
 import models.Player;
 import models.board.Hero;
+import utils.GraphicsUtils;
 import utils.LogUtils;
+
+import java.util.Map;
 
 /**
  * Created by Isaac on 5/30/17.
@@ -105,5 +108,16 @@ public class Stockpile extends EnergyState {
 
     public void refill() {
         currentEnergy = new EnergyState(red, blue, green, yellow);
+    }
+
+    @Override
+    public Map<String, Object> encode() {
+        Map<String, Object> stockpileMap = super.encode();
+        stockpileMap.put("currentRed", currentEnergy.red);
+        stockpileMap.put("currentBlue", currentEnergy.blue);
+        stockpileMap.put("currentGreen", currentEnergy.green);
+        stockpileMap.put("currentYellow", currentEnergy.yellow);
+
+        return stockpileMap;
     }
 }
