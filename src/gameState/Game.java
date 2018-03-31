@@ -76,11 +76,10 @@ public class Game {
     public static void setStatusMain() {
         setStatus(STATUS.MAIN_PHASE);
         GraphicsUtils.setHudText("");
-//        GraphicsUtils.setSelectables(GraphicsUtils.getHandNode());
         GraphicsUtils.setSelectablesHandAndEnergy();
     }
 
-    public static void setStatusEnergyPhase() {
+    private static void setStatusEnergyPhase() {
         setStatus(STATUS.ENERGY_PHASE);
         GraphicsUtils.setHudText("SELECT AN ENERGY TYPE TO GAIN");
         GraphicsUtils.setSelectables(GraphicsUtils.getEnergyNode());
@@ -135,9 +134,7 @@ public class Game {
     }
 
     public static Player getCurrentPlayer() {
-        System.out.println("Current turn: " + turn);
         for (Player player : players) {
-            System.out.println("Checking player with turn #: " + player.getTurnOrder() + " and name: " + player.playerName());
             if (player.getTurnOrder() == turn) {
                 return player;
             }
@@ -146,9 +143,8 @@ public class Game {
         return players.get(0);
     }
 
-    public static Player getNextPlayer() {
+    private static Player getNextPlayer() {
         for (Player player : players) {
-            System.out.println("Searching players for " + (turn + 1) + " ... " + player.getTurnOrder());
             if (player.getTurnOrder() == turn + 1) {
                 return player;
             }
@@ -171,14 +167,8 @@ public class Game {
     }
 
     public void start() {
-//        InputUtils.initInput();
 
         for (Player player : players) {
-//            System.out.print("Enter name for " + player.playerName() + " (or ENTER to skip): ");
-//            String name = InputUtils.getInput();
-//            if (!name.isEmpty()) {
-//                player.setName(name);
-//            }
             player.shuffleDeck();
             player.draw(4);
             System.out.println();
@@ -186,17 +176,7 @@ public class Game {
 
         GraphicsUtils.renderCards(player);
 
-
-//        while (!gameIsOver()) {
         takeTurn(player);
-
-
-//        }
-//        if (winningPlayer != null && winningPlayer.equals(TIE_GAME)) {
-//            LogUtils.log(LogUtils.LOG_TYPE.PUBLIC, "It's a tie!");
-//        } else if (winningPlayer != null) {
-//            LogUtils.log(LogUtils.LOG_TYPE.PUBLIC, winningPlayer.playerName() + " wins!");
-//        }
     }
 
     private static void takeTurn(Player currentPlayer) {
@@ -204,19 +184,12 @@ public class Game {
         LogUtils.log(LogUtils.LOG_TYPE.PUBLIC, "*** " + currentPlayer.playerName() + "'s turn ***");
 
         turn = currentPlayer.getTurnOrder();
-        System.out.println("Current turn # is " + turn);
 
         setStatusEnergyPhase();
 
         currentPlayer.draw();
 
         currentPlayer.getStoredEnergy().refill();
-
-//        GsonBuilder builder = new GsonBuilder();
-//        Gson gson = builder.excludeFieldsWithoutExposeAnnotation().create();
-//        String json = gson.toJson(BoardState.getInstance());
-//
-//        System.out.println("Json result:\n" + json);
 
     }
 
@@ -227,20 +200,6 @@ public class Game {
         } else {
             Game.takeTurn(Game.getPlayer());
         }
-//        for (BoardPosition pos : currentPlayer.getBoard()) {
-//            if (!pos.isEmpty()) {
-//                if (pos.getEntity() instanceof Hero) {
-//                    Hero entity = (Hero)pos.getEntity();
-//                    entity.onTurnEnd();
-//
-//                    entity.getStoredEnergy().reset();
-//                }
-//            }
-//        }
-//        takeTurn(currentPlayer);
-//        GraphicsUtils.renderBoard();
-//        GraphicsUtils.renderCards(getPlayer());
-        //   incrementTurn();
     }
 
     public static void executeEndTurnAbilityForPosition(BoardPosition pos) {

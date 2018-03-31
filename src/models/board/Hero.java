@@ -119,10 +119,6 @@ public class Hero extends BoardEntity {
     }
 
     public String toString() {
-//        return card.toString(getText()) +
-//                "\nStored energy: " + storedEnergy.toString() +
-//                "\nHealth: " + healthString() +
-//                equipmentString();
         return card.getName() + "\n" + healthString() + armorString();
     }
 

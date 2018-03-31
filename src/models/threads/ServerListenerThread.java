@@ -2,14 +2,8 @@ package models.threads;
 
 import com.google.gson.Gson;
 import gameState.Game;
-import libraries.Cards;
 import models.Player;
 import models.board.BoardState;
-import models.cards.Card;
-import models.energyUtils.EnergyState;
-import models.exceptions.CardNotFoundException;
-import models.exceptions.IllegalMoveException;
-import models.exceptions.PositionOccupiedException;
 import utils.GraphicsUtils;
 
 import java.io.*;
@@ -52,7 +46,6 @@ public class ServerListenerThread extends Thread {
                 if (!fromServer.isEmpty()) {
                     System.out.println("[" + name + "]: MESSAGE FROM SERVER: " + fromServer);
                     if (fromServer.charAt(0) == '{') {
-//                        decode(fromServer);
                         BoardState boardState = new Gson().fromJson(fromServer, BoardState.class);
                         // Preserve localPlayer flag:
                         for (Player player : Game.players) {
@@ -68,28 +61,13 @@ public class ServerListenerThread extends Thread {
                         Game.setPlayers(boardState.players.get(0), boardState.players.get(1));
                         GraphicsUtils.renderBoard();
                     }
-//                    else if (Game.getStatus() != null && Game.getStatus().equals(Game.STATUS.ENEMY_TURN)) {
-//                        if (fromServer.contains("play")) {
-//                            String cardName = fromServer.substring(fromServer.indexOf("play") + 5);
-//                            Card toPlay;
-//                            if (!cardName.isEmpty()) {
-//                                toPlay = Cards.getCardFromName(cardName);
-//                            } else {
-//                                toPlay = Cards.getCardFromName("Poison Gas");
-//                            }
-//                            Game.getCurrentPlayer().playCard(toPlay);
                          else if (fromServer.contains("end")) {
                         Game.endTurn(Game.getCurrentPlayer());
                     }
-//                        } else if (fromServer.contains("yellow")) {
-//                            Game.getCurrentPlayer().getStoredEnergy().addEnergy(EnergyState.ENERGY_TYPE.YELLOW, 1);
-//                            GraphicsUtils.renderBoard();
-//                        }
-//                    }
                 }
                 fromServer = inputStream.readLine();
             }
-        } catch (IOException e) {// | CardNotFoundException | PositionOccupiedException | IllegalMoveException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

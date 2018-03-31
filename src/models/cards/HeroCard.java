@@ -64,25 +64,6 @@ public abstract class HeroCard extends Card {
 
     public abstract Hero generateEntity(Player player, BoardPosition pos);
 
-//    @Override
-//    public BoardEntity play(Player player) throws ActionCancelledException, IllegalMoveException, PositionOccupiedException {
-//        int position;
-//        position = InputUtils.handleInputForCardPosition();
-//        return BoardState.getInstance().placeCard(player, position, this);
-//    }
-
-
-
-//    @Override
-//    public BoardEntity play(Player player, int position) throws ActionCancelledException {
-//        try {
-//            return BoardState.getInstance().placeCard(player, position, this);
-//        } catch (IllegalMoveException | PositionOccupiedException e) {
-//            e.printStackTrace();
-//            return null;
-//        }
-//    }
-
     @Override
     public String toString() {
         return super.toString() + tagString();

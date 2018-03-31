@@ -136,7 +136,6 @@ public class Main extends SimpleApplication {
                     }
 
                     System.out.println("Clicked on " + result.getGeometry().getName());
-//                        Node target = result.getGeometry().getParent();
 
                     if (Game.getStatus() == Game.STATUS.ENERGY_PHASE &&
                             target.getUserData("type") == Game.OBJECT_TYPE.ENERGY.toString()) {
@@ -219,7 +218,6 @@ public class Main extends SimpleApplication {
             if (delta != 0) {
                 var += delta;
                 System.out.println(var);
-//                GraphicsUtils.renderBoard();
             }
         }
     };
@@ -315,23 +313,18 @@ public class Main extends SimpleApplication {
             float ZOOM_SPEED = 0.5f;
             float currentAngle = chaseCam.getVerticalRotation();
             if (name.equals("camera_up") && currentAngle < BOARD_VIEW_ANGLE) {
-//                mod = delta;
                 if (chaseCam.getDistanceToTarget() == DEFAULT_CAMERA_DISTANCE) {
                     chaseCam.setDefaultVerticalRotation(currentAngle + delta);
                 } else {
                     chaseCam.setDefaultDistance(chaseCam.getDistanceToTarget() - ZOOM_SPEED);
                 }
-            } else if (name.equals("camera_down")) {// && currentAngle > HAND_VIEW_ANGLE) {
-//                mod = delta * -1;
+            } else if (name.equals("camera_down")) {
                 if (currentAngle > HAND_VIEW_ANGLE && chaseCam.getDistanceToTarget() == DEFAULT_CAMERA_DISTANCE) {
                     chaseCam.setDefaultVerticalRotation(currentAngle - delta);
                 } else if (chaseCam.getDistanceToTarget() <= 28){
                     chaseCam.setDefaultDistance(chaseCam.getDistanceToTarget() + (ZOOM_SPEED));
                 }
             }
-//            if (mod != 0) {
-//                chaseCam.setDefaultVerticalRotation(currentAngle + mod);
-//            }
         }
     };
 
@@ -349,9 +342,6 @@ public class Main extends SimpleApplication {
         yourDeck.shuffle();
 
         Player you = new Player(0, yourDeck, true);
-
-//        final int INITIAL_DRAW = 5;
-//        you.draw(INITIAL_DRAW);
 
         you.fillStockpile();
 
@@ -377,12 +367,10 @@ public class Main extends SimpleApplication {
         chaseCam.setMinVerticalRotation(HAND_VIEW_ANGLE);
         chaseCam.setMaxVerticalRotation(BOARD_VIEW_ANGLE);
 
-//        game.renderHand(you);
         GraphicsUtils.renderCards(you);
         GraphicsUtils.renderBoard();
 
         initKeys();
-//        Game.takeTurn();
         inputManager.deleteMapping(CameraInput.CHASECAM_UP);
         inputManager.deleteMapping(CameraInput.CHASECAM_DOWN);
         inputManager.deleteMapping(CameraInput.CHASECAM_MOVELEFT);
@@ -401,7 +389,5 @@ public class Main extends SimpleApplication {
 
     @Override
     public void simpleUpdate(float tpf) {
-//        renderCards(Game.getCurrentPlayer().getHand().getCards());
-//        Game.takeTurn();
     }
 }

@@ -81,7 +81,6 @@ public class Player {
     public void draw() {
         try {
             Card drawnCard = deck.draw();
-//            LogUtils.log(LogUtils.LOG_TYPE.PUBLIC, playerName() + " drew a card.");
 
             hand.addCard(drawnCard);
             GraphicsUtils.renderCards(this);
@@ -98,14 +97,6 @@ public class Player {
     }
 
     public Equipment playCard(EquipmentCard playedCard, Hero equipTo) throws ActionCancelledException {
-//        BoardEntity equipTo = null;
-//        while (equipTo == null) {
-//            equipTo = InputUtils.promptForTarget(playedCard);
-//            if (!(equipTo instanceof Hero) || equipTo.getPlayer() != this) {
-//                LogUtils.logWarning("Not a valid target for equipment.");
-//                equipTo = null;
-//            }
-//        }
         Equipment toEquip = playedCard.generateEntity(this, equipTo);
         equipTo.equip(toEquip);
         return toEquip;
@@ -117,9 +108,6 @@ public class Player {
             LogUtils.logCardPlayed(this, playedCard);
             BoardEntity entity = null;
             try {
-//            entity = BoardState.getInstance().placeCard(this, position, playedCard);
-//            entity = playedCard.play(this);
-
                 if (playedCard instanceof HeroCard) {
                     entity = BoardState.getInstance().placeCard(this, position, (HeroCard) playedCard);
                 } else if (playedCard instanceof EquipmentCard) {
@@ -153,11 +141,7 @@ public class Player {
 
                 BoardEntity entity = null;
 
-//            try {
                 LogUtils.logCardPlayed(this, playedCard);
-
-//                entity = playedCard.play(this);
-
                 getStoredEnergy().useEnergy(playedCard.getCost());
 
                 getHand().playCard(playedCard);
@@ -165,9 +149,6 @@ public class Player {
                 if (entity != null) {
                     entity.onPlay();
                 }
-//            } catch (ActionCancelledException e) {
-//                LogUtils.logActionCancelled();
-//            }
             } else {
                 LogUtils.log(LogUtils.LOG_TYPE.PRIVATE, "Not enough energy!");
             }

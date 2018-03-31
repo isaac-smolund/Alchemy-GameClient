@@ -133,7 +133,6 @@ public class GraphicsUtils {
     public static List<Node> getClickables() {
         if (clickables == null) {
             clickables = new ArrayList<>();
-//            clickables.setName("clickables");
         }
         return clickables;
     }
@@ -141,7 +140,6 @@ public class GraphicsUtils {
     public static List<Node> getSelectables() {
         if (selectables == null) {
             selectables = new ArrayList<>();
-//            selectables.setName("selectables");
         }
         return selectables;
     }

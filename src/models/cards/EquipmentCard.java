@@ -50,10 +50,4 @@ public abstract class EquipmentCard extends Card {
     }
 
     public abstract Equipment generateEntity(Player player, Hero equipTo);
-
-//
-//    @Override
-//    public BoardEntity play(Player player, int position) throws ActionCancelledException {
-//        return player.playCard(this);
-//    }
 }

@@ -346,7 +346,6 @@ public class Cards {
 
         @Override
         public void onPlay(int targetPosition) throws ActionCancelledException {
-//            BoardEntity target = InputUtils.promptForTarget(this);
             BoardEntity target = null;
             target = BoardState.getInstance().getEntityForPosition(targetPosition);
             target.dealDamage(damage);

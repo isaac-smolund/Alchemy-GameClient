@@ -342,8 +342,6 @@ public class InputUtils {
             toReturn = promptForTarget(hero);
         }
         return toReturn;
-//        Game.setStatusTargeting();
-
     }
 
     public static BoardEntity promptForTarget(EquipmentCard equipmentCard) throws ActionCancelledException {

@@ -19,10 +19,4 @@ public abstract class RitualCard extends Card {
 
     public abstract void onPlay(int target) throws ActionCancelledException;
 
-//    @Override
-//    public BoardEntity play(Player player) throws ActionCancelledException, IllegalMoveException, PositionOccupiedException, CardNotFoundException {
-//        onPlay();
-//        return null;
-//    }
-
 }
