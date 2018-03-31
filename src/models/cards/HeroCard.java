@@ -1,5 +1,6 @@
 package models.cards;
 
+import com.google.gson.annotations.Expose;
 import models.Player;
 import models.board.BoardEntity;
 import models.board.BoardPosition;
@@ -20,8 +21,10 @@ import java.util.Arrays;
  */
 public abstract class HeroCard extends Card {
 
+    @Expose
     private int maxHealth;
 
+    @Expose
     private ArrayList<TAG> tags;
 
     public int getHealth() {

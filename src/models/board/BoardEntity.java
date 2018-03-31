@@ -1,7 +1,7 @@
 package models.board;
 
+import com.google.gson.annotations.Expose;
 import models.Player;
-import models.energyUtils.Stockpile;
 import utils.EventService;
 import utils.GraphicsUtils;
 import utils.LogUtils;
@@ -12,11 +12,16 @@ import java.util.Map;
 /**
  * Created by Isaac on 6/11/17.
  */
-public abstract class BoardEntity {
+public class BoardEntity {
 
     private Player player;
+
+    @Expose
     private int currentHealth;
+    @Expose
     private int maxHealth;
+
+    BoardEntity() {}
 
     public BoardEntity(int health) {
         this.currentHealth = health;
@@ -63,9 +68,9 @@ public abstract class BoardEntity {
         GraphicsUtils.renderBoard();
     }
 
-    protected abstract void die();
+    protected  void die() {}
 
-    public abstract String getName();
+    public String getName() {return "";}
 
     public String healthString() {
         String maxHealthString = LogUtils.colorGreen(Integer.toString(maxHealth));

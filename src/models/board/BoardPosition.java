@@ -1,5 +1,6 @@
 package models.board;
 
+import com.google.gson.annotations.Expose;
 import com.jme3.scene.Node;
 import models.Player;
 
@@ -10,8 +11,10 @@ import java.util.Map;
  * Created by Isaac on 6/16/17.
  */
 public class BoardPosition {
+    @Expose
     private int position;
-    private Player player;
+    private transient Player player;
+    @Expose
     private BoardEntity entity;
 
     private Node graphicsNode;

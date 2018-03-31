@@ -1,5 +1,6 @@
 package gameState;
 
+import com.google.gson.*;
 import com.jme3.app.SimpleApplication;
 import models.Player;
 import models.board.BoardEntity;
@@ -124,12 +125,19 @@ public class Game {
         turn = 0;
     }
 
+    public static void setPlayers(Player ... players) {
+        Game.players = new ArrayList<>();
+        Collections.addAll(Game.players, players);
+    }
+
     public static Player getPlayer() {
         return player;
     }
 
     public static Player getCurrentPlayer() {
+        System.out.println("Current turn: " + turn);
         for (Player player : players) {
+            System.out.println("Checking player with turn #: " + player.getTurnOrder() + " and name: " + player.playerName());
             if (player.getTurnOrder() == turn) {
                 return player;
             }
@@ -204,7 +212,11 @@ public class Game {
 
         currentPlayer.getStoredEnergy().refill();
 
-        System.out.println(BoardState.getInstance().encode().toString());
+//        GsonBuilder builder = new GsonBuilder();
+//        Gson gson = builder.excludeFieldsWithoutExposeAnnotation().create();
+//        String json = gson.toJson(BoardState.getInstance());
+//
+//        System.out.println("Json result:\n" + json);
 
     }
 

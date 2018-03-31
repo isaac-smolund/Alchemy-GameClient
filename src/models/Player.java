@@ -1,5 +1,6 @@
 package models;
 
+import com.google.gson.annotations.Expose;
 import com.sun.istack.internal.NotNull;
 import gameState.Game;
 import models.board.*;
@@ -20,17 +21,21 @@ import java.util.Map;
  */
 public class Player {
 
+    @Expose
     private int playOrder;
     public boolean isLocalPlayer;
 
+    @Expose
     private String name;
 
     private Hand hand;
     private Deck deck;
 
+    @Expose
     private Stockpile storedEnergy;
 
     private PlayerEntity entity;
+    @Expose
     private BoardPosition[] boardSpaces;
 
     public Player(int turnOrder, Deck deck, boolean isLocalPlayer) {
@@ -207,6 +212,7 @@ public class Player {
     public Map<String,Object> encode() {
         Map<String, Object> playerMap = new HashMap<>();
         playerMap.put("entityType", Player.class);
+        playerMap.put("name", playerName());
         playerMap.put("health", getEntity().getCurrentHealth());
         playerMap.put("maxHealth", getEntity().getMaxHealth());
         playerMap.put("energy", storedEnergy.encode());

@@ -1,5 +1,6 @@
 package models.cards;
 
+import com.google.gson.annotations.Expose;
 import models.Player;
 import models.board.BoardEntity;
 import models.energyUtils.Cost;
@@ -11,10 +12,12 @@ import utils.IdService;
 import utils.LogUtils;
 
 public abstract class Card {
+    @Expose
     private final String name;
     private String text;
     private final String description;
     private final String image;
+    @Expose
     private final int id;
 
     private final Cost cost;

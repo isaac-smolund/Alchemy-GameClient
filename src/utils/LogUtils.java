@@ -1,13 +1,16 @@
 package utils;
 
+import com.google.gson.*;
 import gameState.Game;
 import models.Player;
+import models.board.BoardEntity;
 import models.board.BoardPosition;
 import models.board.BoardState;
 import models.cards.Card;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 /**
@@ -54,9 +57,38 @@ public class LogUtils {
         PUBLIC
     }
 
+
+    private static class BoardEntityAdapter implements JsonSerializer<BoardEntity>, JsonDeserializer<BoardEntity> {
+
+        @Override
+        public BoardEntity deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+            JsonObject jsonObject = jsonElement.getAsJsonObject();
+            String entityType = jsonObject.get("type").getAsString();
+            JsonElement element = jsonObject.get("properties");
+
+            try {
+                return jsonDeserializationContext.deserialize(element, Class.forName("models.board." + entityType));
+            } catch (ClassNotFoundException e) {
+                throw new JsonParseException("Unkown class name: " + entityType, e);
+            }
+        }
+
+        @Override
+        public JsonElement serialize(BoardEntity boardEntity, Type type, JsonSerializationContext jsonSerializationContext) {
+            JsonObject result = new JsonObject();
+            result.add("type", new JsonPrimitive(boardEntity.getClass().getSimpleName()));
+            result.add("properties", jsonSerializationContext.serialize(boardEntity, boardEntity.getClass()));
+
+            return result;
+        }
+    }
+
     public static void log(LOG_TYPE type, String logEntry) {
         try {
             output.writeBytes(logEntry + "\n");
+            GsonBuilder gsonBuilder = new GsonBuilder();
+            Gson gson = gsonBuilder.excludeFieldsWithoutExposeAnnotation().create();
+            output.writeBytes(gson.toJson(BoardState.getInstance()) + "\n");
         } catch (IOException e) {
             e.printStackTrace();
         }

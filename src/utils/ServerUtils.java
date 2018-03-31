@@ -1,7 +1,7 @@
 package utils;
 
 import com.jme3.app.SimpleApplication;
-import models.ServerListenerThread;
+import models.threads.ServerListenerThread;
 
 import java.io.DataOutputStream;
 import java.io.IOException;

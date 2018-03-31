@@ -1,5 +1,6 @@
 package libraries;
 
+import com.google.gson.annotations.Expose;
 import models.Player;
 import models.board.*;
 import models.cards.Card;
@@ -297,6 +298,7 @@ public class Cards {
         }
 
         private class entity extends Hero {
+            @Expose
             private int tokens = 0;
             entity(Player player, BoardPosition pos, HeroCard card) {
                 super(player, pos, card);

@@ -1,5 +1,6 @@
 package models.energyUtils;
 
+import com.google.gson.annotations.Expose;
 import models.Player;
 import models.board.Hero;
 import utils.GraphicsUtils;
@@ -15,6 +16,7 @@ public class Stockpile extends EnergyState {
     private Player player;
     private Hero owningEntity;
 
+    @Expose
     private EnergyState currentEnergy;
 
     public Stockpile(Player player) {

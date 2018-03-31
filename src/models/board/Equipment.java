@@ -1,5 +1,6 @@
 package models.board;
 
+import com.google.gson.annotations.Expose;
 import models.Player;
 import models.cards.EquipmentCard;
 import utils.LogUtils;
@@ -11,8 +12,14 @@ import java.util.Map;
  * Created by Isaac on 6/25/17.
  */
 public class Equipment extends BoardEntity {
+    @Expose
     private EquipmentCard card;
+
     private Hero equippedTo;
+
+    private Equipment() {
+
+    }
 
     public Equipment(Player owningPlayer, Hero equippedTo, EquipmentCard card) {
         super(owningPlayer, card.getDurability());

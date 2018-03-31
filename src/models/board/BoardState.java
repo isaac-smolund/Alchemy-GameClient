@@ -1,5 +1,6 @@
 package models.board;
 
+import com.google.gson.annotations.Expose;
 import gameState.Game;
 import models.Player;
 import models.cards.HeroCard;
@@ -16,13 +17,25 @@ public class BoardState {
     public static final int NUMBER_OF_BOARD_SPACES = 4;
     public static final int PLAYER_POSITION = 2;
 
+    @Expose
+    public List<Player> players;
+
     private static BoardState state = null;
+
+    public BoardState() {
+        this.players = new ArrayList<>();
+        this.players.addAll(Game.players);
+    }
 
     public static BoardState getInstance() {
         if (state == null) {
             state = new BoardState();
         }
         return state;
+    }
+
+    public static void setIntstance(BoardState newState) {
+        state = newState;
     }
 
     public String toString() {

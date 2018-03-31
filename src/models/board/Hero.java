@@ -1,5 +1,6 @@
 package models.board;
 
+import com.google.gson.annotations.Expose;
 import gameState.Game;
 import libraries.Cards;
 import models.Player;
@@ -9,7 +10,6 @@ import models.cards.HeroCard;
 import models.energyUtils.EnergyState;
 import utils.EventService;
 import utils.GraphicsUtils;
-import utils.InputUtils;
 import utils.LogUtils;
 
 import java.util.ArrayList;
@@ -22,11 +22,18 @@ import java.util.Map;
 public class Hero extends BoardEntity {
 
     private BoardPosition position;
+    @Expose
     private HeroCard card;
 
+    @Expose
     private EnergyState storedEnergy;
 
+    @Expose
     private ArrayList<Equipment> equipment;
+
+    private Hero() {
+
+    }
 
     public Hero(Player player, BoardPosition position, HeroCard card) {
         super(player, card.getHealth());

@@ -1,5 +1,6 @@
 package models.cards;
 
+import com.google.gson.annotations.Expose;
 import models.Player;
 import models.board.BoardEntity;
 import models.board.Hero;
@@ -12,8 +13,11 @@ import models.exceptions.PositionOccupiedException;
 
 public abstract class EquipmentCard extends Card {
 
+    @Expose
     private int durability;
+    @Expose
     private int damage;
+    @Expose
     private EQUIPMENT_TYPE type;
 
     public enum EQUIPMENT_TYPE {

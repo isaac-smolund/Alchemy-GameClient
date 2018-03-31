@@ -8,6 +8,11 @@ import utils.LogUtils;
  * Created by Isaac on 6/13/17.
  */
 public class PlayerEntity extends BoardEntity {
+
+    private PlayerEntity() {
+
+    }
+
     public PlayerEntity(Player player) {
         super(player, Game.STARTING_HEALTH);
     }

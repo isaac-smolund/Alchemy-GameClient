@@ -8,6 +8,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import gameState.Game;
 import libraries.Cards;
+import models.threads.MainThread;
 import models.Player;
 import models.board.BoardEntity;
 import models.board.BoardState;
@@ -47,21 +48,9 @@ public class Main extends SimpleApplication {
         app = new Main();
         ServerUtils.setApp(app);
         MainThread mainThread = new MainThread("main_thread", app);
+        MainThread.setInstance(mainThread);
         mainThread.start();
         ServerUtils.connectToHost("localhost", 7000);
-    }
-
-    private static class MainThread extends Thread {
-        private String name;
-        private SimpleApplication app;
-        MainThread(String name, SimpleApplication app) {
-            this.name = name;
-            this.app = app;
-            System.out.println("Creating thread \"" + name + "\"");
-        }
-        public void run() {
-            app.start();
-        }
     }
 
     private void selectCard(Node card) {

@@ -1,5 +1,6 @@
 package models.energyUtils;
 
+import com.google.gson.annotations.Expose;
 import com.jme3.math.ColorRGBA;
 import utils.GraphicsUtils;
 import utils.LogUtils;
@@ -12,9 +13,13 @@ import java.util.Map;
  */
 public class EnergyState {
 
+    @Expose
     int red;
+    @Expose
     int blue;
+    @Expose
     int green;
+    @Expose
     int yellow;
 
     public Map<String, Object> encode() {
