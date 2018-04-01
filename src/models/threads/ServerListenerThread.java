@@ -59,7 +59,7 @@ public class ServerListenerThread extends Thread {
                         }
                         BoardState.setIntstance(boardState);
                         Game.setPlayers(boardState.players.get(0), boardState.players.get(1));
-                        GraphicsUtils.renderBoard();
+                        MainThread.getInstance().render();
                     }
                          else if (fromServer.contains("end")) {
                         Game.endTurn(Game.getCurrentPlayer());
