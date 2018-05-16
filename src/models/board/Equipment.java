@@ -1,5 +1,6 @@
 package models.board;
 
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import models.Player;
 import models.cards.EquipmentCard;
@@ -70,6 +71,14 @@ public class Equipment extends BoardEntity {
         entityString.put("card", getCard().getName());
 
         return entityString;
+    }
+
+    @Override
+    public JsonObject serialize() {
+        JsonObject json = new JsonObject();
+        json.add("card", LogUtils.serializeObject(card));
+
+        return json;
     }
 
 

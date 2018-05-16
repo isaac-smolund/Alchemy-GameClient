@@ -7,6 +7,7 @@ import com.jme3.math.*;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import gameState.Game;
+import gameState.RenderQueue;
 import libraries.Cards;
 import models.threads.MainThread;
 import models.Player;
@@ -140,8 +141,9 @@ public class Main extends SimpleApplication {
                     if (Game.getStatus() == Game.STATUS.ENERGY_PHASE &&
                             target.getUserData("type") == Game.OBJECT_TYPE.ENERGY.toString()) {
 
-                        Game.getPlayer().getStoredEnergy().addEnergy(EnergyState.getEnumValueFromString(target.getUserData("energyType")), 1);
-                        GraphicsUtils.renderBoard();
+                        Game.getPlayer().getStoredEnergy().addEnergy(
+                                EnergyState.getEnumValueFromString(target.getUserData("energyType")), 1);
+                        RenderQueue.getInstance().queueUpdate(RenderQueue.UpdateType.UPDATE_BOARD);
                         Game.setStatusMain();
 
                     } else if (Game.getStatus() == Game.STATUS.MAIN_PHASE) {
@@ -204,6 +206,7 @@ public class Main extends SimpleApplication {
                     } else {
                         deselectCard();
                     }
+                    GraphicsUtils.renderBoard();
                     return;
                 }
             }
@@ -331,6 +334,8 @@ public class Main extends SimpleApplication {
     @Override
     public void simpleInitApp() {
 
+        LogUtils.initGson();
+
         GraphicsUtils.init(assetManager, guiNode);
 
         System.out.println("Beginning...");
@@ -389,5 +394,6 @@ public class Main extends SimpleApplication {
 
     @Override
     public void simpleUpdate(float tpf) {
+        RenderQueue.getInstance().executeUpdate();
     }
 }

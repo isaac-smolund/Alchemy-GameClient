@@ -14,6 +14,14 @@ public class BoardPosition {
     @Expose
     private int position;
     private transient Player player;
+
+    /**
+     * Variable used to keep track of the player this belongs to without creating
+     * a circular dependency:
+     */
+    @Expose
+    private int playerTurn;
+
     @Expose
     private BoardEntity entity;
 
@@ -22,6 +30,7 @@ public class BoardPosition {
     public BoardPosition(int position, Player player) {
         this.position = position;
         this.player = player;
+        this.playerTurn = player.getTurnOrder();
     }
 
     public int getPosition() {
@@ -29,6 +38,14 @@ public class BoardPosition {
     }
 
     public Player getPlayer() {
+        if (player == null) {
+            for (Player currentPlayer : BoardState.getInstance().getPlayers()) {
+                if (currentPlayer.getTurnOrder() == this.playerTurn) {
+                    this.player = currentPlayer;
+                    return player;
+                }
+            }
+        }
         return player;
     }
 

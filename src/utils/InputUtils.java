@@ -258,7 +258,7 @@ public class InputUtils {
                     command = handleInputGeneric(commandPrefix, commandSuffix);
                     break;
             }
-        } catch (CardNotFoundException | PositionOccupiedException | IllegalMoveException ignored) {
+        } catch (CardNotFoundException ignored) {
         } catch (IndexOutOfBoundsException e) {
             LogUtils.logWarning("Incorrect data.");
         } catch (NumberFormatException e) {

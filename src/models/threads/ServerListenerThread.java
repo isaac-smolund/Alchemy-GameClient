@@ -1,10 +1,13 @@
 package models.threads;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import gameState.Game;
+import gameState.RenderQueue;
 import models.Player;
+import models.board.BoardEntity;
 import models.board.BoardState;
-import utils.GraphicsUtils;
+import utils.LogUtils;
 
 import java.io.*;
 
@@ -22,35 +25,23 @@ public class ServerListenerThread extends Thread {
         System.out.println("Creating Thread \"" + name + "\"");
     }
 
-    private BoardState decode(String stateString) {
-        BoardState state = new BoardState();
-
-        for (Player player : Game.players) {
-            int nameIndex = stateString.indexOf(player.playerName());
-            int startIndex = stateString.indexOf("health=", nameIndex) + 7;
-            int endIndex = stateString.indexOf(",", startIndex);
-            int playerHealth = Integer.parseInt(stateString.substring(startIndex, endIndex));
-
-            player.getEntity().setCurrentHealth(playerHealth);
-        }
-
-        MainThread.getInstance().render();
-        return state;
-    }
-
     public void run() {
         String fromServer;
         try {
             fromServer = inputStream.readLine();
             while (true) {
-                if (!fromServer.isEmpty()) {
+                if (fromServer != null && !fromServer.isEmpty()) {
                     System.out.println("[" + name + "]: MESSAGE FROM SERVER: " + fromServer);
                     if (fromServer.charAt(0) == '{') {
-                        BoardState boardState = new Gson().fromJson(fromServer, BoardState.class);
+                        Gson gson = new GsonBuilder()
+                                .registerTypeAdapter(BoardEntity.class, new LogUtils.BoardEntityAdapter())
+                                .excludeFieldsWithoutExposeAnnotation()
+                                .create();
+                        BoardState boardState = gson.fromJson(fromServer, BoardState.class);
                         // Preserve localPlayer flag:
                         for (Player player : Game.players) {
                             if (player.isLocalPlayer) {
-                                for (Player newPlayer : boardState.players) {
+                                for (Player newPlayer : boardState.getPlayers()) {
                                     if (newPlayer.getTurnOrder() == player.getTurnOrder()) {
                                         newPlayer.isLocalPlayer = true;
                                     }
@@ -58,10 +49,12 @@ public class ServerListenerThread extends Thread {
                             }
                         }
                         BoardState.setIntstance(boardState);
-                        Game.setPlayers(boardState.players.get(0), boardState.players.get(1));
-                        MainThread.getInstance().render();
+                        Game.setPlayers(boardState.getPlayers().get(0), boardState.getPlayers().get(1));
+
+                        RenderQueue.getInstance().queueUpdate(RenderQueue.UpdateType.UPDATE_ALL);
                     }
-                         else if (fromServer.contains("end")) {
+                    else if (fromServer.contains("end")) {
+                        System.out.println("Thread = " + Thread.currentThread());
                         Game.endTurn(Game.getCurrentPlayer());
                     }
                 }

@@ -1,6 +1,7 @@
 package models.threads;
 
 import com.jme3.app.SimpleApplication;
+import models.board.BoardState;
 import utils.GraphicsUtils;
 
 /**
@@ -8,8 +9,10 @@ import utils.GraphicsUtils;
  */
 public class MainThread extends Thread{
     private String name;
+    private BoardState boardState;
     private SimpleApplication app;
     private static MainThread instance;
+
     public MainThread(String name, SimpleApplication app) {
         this.name = name;
         this.app = app;
@@ -25,10 +28,6 @@ public class MainThread extends Thread{
 
     public static void setInstance(MainThread newInstance) {
         instance = newInstance;
-    }
-
-    public void render() {
-        GraphicsUtils.renderBoard();
     }
 
 }

@@ -20,15 +20,13 @@ import com.jme3.texture.Texture;
 import com.jme3.ui.Picture;
 import gameState.Game;
 import models.Player;
-import models.board.BoardPosition;
-import models.board.Equipment;
-import models.board.Hero;
-import models.board.PlayerEntity;
+import models.board.*;
 import models.cards.Card;
 import models.cards.HeroCard;
 import models.energyUtils.EnergyState;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -231,17 +229,18 @@ public class GraphicsUtils {
 
     public static void renderCards(Player player) {
 
-        List<Card> cards = player.getHand().getCards();
-
-        getHandNode().detachAllChildren();
-        int handSize = player.getHand().getCards().size();
-        final float SPACING = handSize <= 5 ? 3 : 3 - (handSize * 0.1f);
-        float xpos = ((cards.size() / 2) * -1 * (SPACING + CARD_WIDTH)) - (CARD_WIDTH/2);
-        for (Card card : cards) {
-            Node cardNode = generateCardNode(card, xpos += SPACING, 1, -2);
-            getHandNode().attachChild(cardNode);
+        if (player.getHand() != null) {
+            List<Card> cards = player.getHand().getCards();
+            getHandNode().detachAllChildren();
+            int handSize = player.getHand().getCards().size();
+            final float SPACING = handSize <= 5 ? 3 : 3 - (handSize * 0.1f);
+            float xpos = ((cards.size() / 2) * -1 * (SPACING + CARD_WIDTH)) - (CARD_WIDTH/2);
+            for (Card card : cards) {
+                Node cardNode = generateCardNode(card, xpos += SPACING, 1, -2);
+                getHandNode().attachChild(cardNode);
+            }
+            getBoardNode().attachChild(getHandNode());
         }
-        getBoardNode().attachChild(getHandNode());
     }
 
     public static Node generateCardPreview(Hero entity) {
@@ -382,8 +381,26 @@ public class GraphicsUtils {
         return cardNode;
     }
 
+    public static void renderAll(BoardState boardState) {
+        renderBoard(boardState);
+        for (Player player : Game.players) {
+            renderCards(player);
+        }
+    }
 
+    /**
+     * Render the default board state.
+     */
     public static void renderBoard() {
+        renderBoard(BoardState.getInstance());
+    }
+
+    /**
+     * Render a specified board state instance.
+     *
+     * @param boardState the board state to render
+     */
+    public static void renderBoard(BoardState boardState) {
         detachChildrenFromBoard(getSlotNode(), getEnemySlotNode(), getEnergyNode(), getPlayerNode(), getEnemyPlayerNode());
         energyNode = null;
         slotNode = null;
@@ -391,8 +408,8 @@ public class GraphicsUtils {
 
         BitmapFont font = assetManager.loadFont("Interface/Fonts/Default.fnt");
 
-        Player player = Game.getPlayer();
-        Player enemy = Game.players.get(1);
+        Player player = boardState.getPlayers().get(0);
+        Player enemy = boardState.getPlayers().get(1);
 
         float x = -10;
         for (EnergyState.ENERGY_TYPE type : EnergyState.ENERGY_TYPE.values()) {

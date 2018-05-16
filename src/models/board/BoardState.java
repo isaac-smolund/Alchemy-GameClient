@@ -17,8 +17,12 @@ public class BoardState {
     public static final int NUMBER_OF_BOARD_SPACES = 4;
     public static final int PLAYER_POSITION = 2;
 
+    /**
+     * List of players in game. First entry
+     * should always be local player.
+     */
     @Expose
-    public List<Player> players;
+    private List<Player> players;
 
     private static BoardState state = null;
 
@@ -36,6 +40,15 @@ public class BoardState {
 
     public static void setIntstance(BoardState newState) {
         state = newState;
+    }
+
+    /**
+     * Get list of players.
+     *
+     * @return The list of players
+     */
+    public List<Player> getPlayers() {
+        return players;
     }
 
     public String toString() {
@@ -79,7 +92,7 @@ public class BoardState {
         if (!slot.isEmpty()) {
             throw new PositionOccupiedException("There is a card in this slot.", null);
         }
-        if (!Arrays.asList(player.getBoard()).contains(slot)) {
+        if (!slot.getPlayer().equals(player)) {
             throw new IllegalMoveException("Position does not belong to you!", null);
         }
         Hero entity = card.generateEntity(player, slot);

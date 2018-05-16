@@ -1,5 +1,7 @@
 package models.board;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import models.Player;
 import utils.EventService;
@@ -12,10 +14,12 @@ import java.util.Map;
 /**
  * Created by Isaac on 6/11/17.
  */
-public class BoardEntity {
+public abstract class BoardEntity {
 
     private Player player;
 
+    @Expose
+    private int playerTurn;
     @Expose
     private int currentHealth;
     @Expose
@@ -31,9 +35,18 @@ public class BoardEntity {
     public BoardEntity(Player player, int health) {
         this(health);
         this.player = player;
+        this.playerTurn = player.getTurnOrder();
     }
 
     public Player getPlayer() {
+        if (player == null) {
+            for (Player player : BoardState.getInstance().getPlayers()) {
+                if (player.getTurnOrder() == playerTurn) {
+                    this.player = player;
+                    return player;
+                }
+            }
+        }
         return player;
     }
 
@@ -68,7 +81,7 @@ public class BoardEntity {
         GraphicsUtils.renderBoard();
     }
 
-    protected  void die() {}
+    protected void die() {}
 
     public String getName() {return "";}
 
@@ -101,4 +114,6 @@ public class BoardEntity {
 
         return entityMap;
     }
+
+    public abstract JsonObject serialize();
 }

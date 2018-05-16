@@ -2,10 +2,9 @@ package utils;
 
 import com.google.gson.*;
 import gameState.Game;
+import gameState.RenderQueue;
 import models.Player;
-import models.board.BoardEntity;
-import models.board.BoardPosition;
-import models.board.BoardState;
+import models.board.*;
 import models.cards.Card;
 
 import java.io.DataOutputStream;
@@ -27,6 +26,18 @@ public class LogUtils {
     private static int DEFAULT_LOG_LENGTH = 5;
     private static int LOG_LIMIT = 100;
     private static int PRINT_DELAY_MS = 100;
+
+    private static GsonBuilder gsonBuilder;
+
+    public static void initGson() {
+        gsonBuilder = new GsonBuilder();
+        gsonBuilder.registerTypeAdapter(BoardEntity.class, new BoardEntityAdapter());
+    }
+
+    public static JsonElement serializeObject(Object object) {
+        Gson gson = gsonBuilder.excludeFieldsWithoutExposeAnnotation().create();
+        return gson.toJsonTree(object);
+    }
 
     // Text colors:
     public static final String ANSI_BLACK = "\u001B[30m";
@@ -58,7 +69,7 @@ public class LogUtils {
     }
 
 
-    private static class BoardEntityAdapter implements JsonSerializer<BoardEntity>, JsonDeserializer<BoardEntity> {
+    public static class BoardEntityAdapter implements JsonSerializer<BoardEntity>, JsonDeserializer<BoardEntity> {
 
         @Override
         public BoardEntity deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
@@ -66,6 +77,16 @@ public class LogUtils {
             String entityType = jsonObject.get("type").getAsString();
             JsonElement element = jsonObject.get("properties");
 
+            System.out.println("Deserializing " + entityType);
+//            switch (entityType) {
+//                case "playerEntity" :
+//                    return jsonDeserializationContext.deserialize(element, PlayerEntity.class);
+//                case "Hero":
+//                    return jsonDeserializationContext.deserialize(element, Hero.class);
+//                case "Equipment":
+//                    return jsonDeserializationContext.deserialize(element, Equipment.class);
+//            }
+//            throw new JsonParseException("Unknown class name: " + entityType);
             try {
                 return jsonDeserializationContext.deserialize(element, Class.forName("models.board." + entityType));
             } catch (ClassNotFoundException e) {
@@ -77,7 +98,7 @@ public class LogUtils {
         public JsonElement serialize(BoardEntity boardEntity, Type type, JsonSerializationContext jsonSerializationContext) {
             JsonObject result = new JsonObject();
             result.add("type", new JsonPrimitive(boardEntity.getClass().getSimpleName()));
-            result.add("properties", jsonSerializationContext.serialize(boardEntity, boardEntity.getClass()));
+            result.add("properties", jsonSerializationContext.serialize(boardEntity));//boardEntity.serialize());
 
             return result;
         }
@@ -86,7 +107,6 @@ public class LogUtils {
     public static void log(LOG_TYPE type, String logEntry) {
         try {
             output.writeBytes(logEntry + "\n");
-            GsonBuilder gsonBuilder = new GsonBuilder();
             Gson gson = gsonBuilder.excludeFieldsWithoutExposeAnnotation().create();
             output.writeBytes(gson.toJson(BoardState.getInstance()) + "\n");
         } catch (IOException e) {
@@ -119,7 +139,7 @@ public class LogUtils {
 
     public static void logWarning(String warning) {
         log(LOG_TYPE.PRIVATE, colorRed("INVALID ACTION: ") + warning);
-        GraphicsUtils.setHudText(warning);
+        RenderQueue.getInstance().queueTextChange(warning);
     }
 
     public static void logCardPlayed(Player player, Card card) {

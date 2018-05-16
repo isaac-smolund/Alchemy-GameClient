@@ -2,14 +2,12 @@ package models;
 
 import com.google.gson.annotations.Expose;
 import com.sun.istack.internal.NotNull;
-import gameState.Game;
+import gameState.RenderQueue;
 import models.board.*;
 import models.cards.*;
 import models.energyUtils.Stockpile;
 import models.exceptions.*;
 import utils.EventService;
-import utils.GraphicsUtils;
-import utils.InputUtils;
 import utils.LogUtils;
 
 import java.util.ArrayList;
@@ -83,9 +81,11 @@ public class Player {
             Card drawnCard = deck.draw();
 
             hand.addCard(drawnCard);
-            GraphicsUtils.renderCards(this);
 
-            EventService.getInstance().queueAndExecuteSingleEvent(EventService.EventType.DRAW, playerName() + " drew a card.", getEntity());
+            EventService.getInstance().queueAndExecuteSingleEvent(
+                    EventService.EventType.DRAW, playerName() + " drew a card.", getEntity());
+            RenderQueue.getInstance().queueUpdate(RenderQueue.UpdateType.UPDATE_HAND);
+
         } catch (DeckOutOfCardsException ignored) {
         }
     }
@@ -135,7 +135,7 @@ public class Player {
         }
     }
 
-    public void playCard(Card playedCard) throws CardNotFoundException, PositionOccupiedException, IllegalMoveException {
+    public void playCard(Card playedCard) throws CardNotFoundException {
         if (isLocalPlayer) {
             if (playedCard.getCost().isSatisfiedByOffering(getStoredEnergy().getCurrentEnergy())) {
 
@@ -146,6 +146,7 @@ public class Player {
 
                 getHand().playCard(playedCard);
 
+                // TODO: This seems very very wrong
                 if (entity != null) {
                     entity.onPlay();
                 }

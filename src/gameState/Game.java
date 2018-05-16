@@ -75,20 +75,20 @@ public class Game {
 
     public static void setStatusMain() {
         setStatus(STATUS.MAIN_PHASE);
-        GraphicsUtils.setHudText("");
+        RenderQueue.getInstance().queueTextChange("");
         GraphicsUtils.setSelectablesHandAndEnergy();
     }
 
     private static void setStatusEnergyPhase() {
         setStatus(STATUS.ENERGY_PHASE);
-        GraphicsUtils.setHudText("SELECT AN ENERGY TYPE TO GAIN");
+        RenderQueue.getInstance().queueTextChange("SELECT AN ENERGY TYPE TO GAIN");
         GraphicsUtils.setSelectables(GraphicsUtils.getEnergyNode());
     }
 
     public static void setStatusAbilityTargeting(Hero.CardSelector newSelector, String helpText) {
         selector = newSelector;
         setStatus(STATUS.SELECTING_ABILITY_TARGET);
-        GraphicsUtils.setHudText(helpText);
+        RenderQueue.getInstance().queueTextChange(helpText);
         GraphicsUtils.setSelectables(GraphicsUtils.getBoardNode());
     }
 
@@ -98,18 +98,18 @@ public class Game {
 
     public static void setStatusTargeting() {
         setStatus(STATUS.SELECTING_CARD_TARGET);
-        GraphicsUtils.setHudText("SELECT TARGET");
+        RenderQueue.getInstance().queueTextChange("SELECT TARGET");
         GraphicsUtils.setSelectables(GraphicsUtils.getSlotNode());
     }
 
     public static void setStatusImbuing() {
         setStatus(STATUS.IMBUING);
-        GraphicsUtils.setHudText("SELECT CARD TO IMBUE WITH POWER");
+        RenderQueue.getInstance().queueTextChange("SELECT CARD TO IMBUE WITH POWER");
         GraphicsUtils.setSelectables(GraphicsUtils.getSlotNode());
     }
 
     public static void setStatus(STATUS status) {
-        GraphicsUtils.setHudText(status.toString());
+        RenderQueue.getInstance().queueTextChange(status.toString());
         Game.status = status;
     }
 

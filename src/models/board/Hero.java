@@ -1,7 +1,9 @@
 package models.board;
 
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import gameState.Game;
+import gameState.RenderQueue;
 import libraries.Cards;
 import models.Player;
 import models.cards.Card;
@@ -143,7 +145,7 @@ public class Hero extends BoardEntity {
     }
 
     public void attack(int damage) {
-        GraphicsUtils.setHudText("Select target for " + getName() + " to attack.");
+        RenderQueue.getInstance().queueTextChange("Select target for " + getName() + " to attack.");
 
         CardSelector selector = new CardSelector(getCard(),
                 target -> {
@@ -198,5 +200,15 @@ public class Hero extends BoardEntity {
         entityMap.put("equipment", equipmentList);
 
         return entityMap;
+    }
+
+    @Override
+    public JsonObject serialize() {
+        JsonObject json = new JsonObject();
+        json.add("card", LogUtils.serializeObject(card));
+        json.add("storedEnergy", LogUtils.serializeObject(storedEnergy));
+        json.add("equipment", LogUtils.serializeObject(equipment));
+
+        return json;
     }
 }
